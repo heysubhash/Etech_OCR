@@ -1,0 +1,22 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Answer Processing Results</title>
+</head>
+<body>
+    <h1>📄 Processed Answer Sheets</h1>
+
+    <ul>
+        {% for result in results %}
+            <li>
+                <strong>{{ result.name }}</strong><br>
+                📄 <a href="{{ url_for('download', filename=result.pdf) }}">Download PDF</a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="{{ url_for('index') }}">⬅️ Go Back</a>
+</body>
+</html>

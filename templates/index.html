@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Sheet Processor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .upload-section {
+            margin-bottom: 30px;
+        }
+
+        .upload-label {
+            display: block;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            display: block;
+            background: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .file-input-wrapper:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+            transform: translateY(-2px);
+        }
+
+        .file-input-wrapper.dragover {
+            border-color: #667eea;
+            background: #e6fffa;
+            transform: scale(1.02);
+        }
+
+        .file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-icon {
+            font-size: 3rem;
+            color: #a0aec0;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-wrapper:hover .file-icon {
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .file-text {
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .file-subtext {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .file-list {
+            margin-top: 15px;
+            padding: 15px;
+            background: #edf2f7;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .file-item:last-child {
+            border-bottom: none;
+        }
+
+        .file-name {
+            color: #2d3748;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .file-size {
+            color: #718096;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+
+        .remove-file {
+            background: #fed7d7;
+            color: #e53e3e;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .remove-file:hover {
+            background: #feb2b2;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .results-title {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .results-list {
+            list-style: none;
+        }
+
+        .result-item {
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            background: #edf2f7;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-name {
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .preview-btn {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .preview-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .download-link {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(72, 187, 120, 0.3);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #764ba2;
+            transform: translateX(-5px);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .file-input-wrapper {
+                padding: 20px;
+            }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            background: #e53e3e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📄 Answer Sheet Processor</h1>
+            <p>Upload your question paper and student answer sheets for automated processing</p>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            <div class="upload-section">
+                <label class="upload-label">📋 Question Paper (PDF)</label>
+                <div class="file-input-wrapper" data-target="question_paper">
+                    <input type="file" name="question_paper" class="file-input" accept=".pdf" required>
+                    <div class="file-icon">📄</div>
+                    <div class="file-text">Click to upload or drag and drop</div>
+                    <div class="file-subtext">PDF files only</div>
+                    <div class="file-list" id="question-files"></div>
+                </div>
+            </div>
+
+            <div class="upload-section">
+                <label class="upload-label">📚 Student Answer Sheets (Multiple PDFs)</label>
+                <div class="file-input-wrapper" data-target="student_pdfs">
+                    <input type="file" name="student_pdfs" class="file-input" accept=".pdf" multiple required>
+                    <div class="file-icon">📚</div>
+                    <div class="file-text">Click to upload or drag and drop</div>
+                    <div class="file-subtext">Select multiple PDF files</div>
+                    <div class="file-list" id="student-files"></div>
+                </div>
+            </div>
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <div class="loading-spinner" id="loadingSpinner"></div>
+                <span id="submitText">🚀 Process Answer Sheets</span>
+            </button>
+        </form>
+
+        {% if generated_pdfs %}
+        <div class="results-section">
+            <h2 class="results-title">
+                <span style="margin-right: 10px;">✅</span>
+                Generated Results
+            </h2>
+            <ul class="results-list">
+                {% for file in generated_pdfs %}
+                    {% if file.endswith('.pdf') %}
+                    <li class="result-item">
+                        <div class="result-name">{{ file }}</div>
+                        <div class="result-actions">
+                            <button class="preview-btn" onclick="previewPDF('{{ file }}')">
+                                👁️ Preview
+                            </button>
+                            <a href="{{ url_for('download', filename=file) }}" class="download-link">
+                                📥 Download
+                            </a>
+                        </div>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // File upload handling
+        document.querySelectorAll('.file-input-wrapper').forEach(wrapper => {
+            const input = wrapper.querySelector('.file-input');
+            const fileList = wrapper.querySelector('.file-list');
+            const icon = wrapper.querySelector('.file-icon');
+            const text = wrapper.querySelector('.file-text');
+
+            // Drag and drop functionality
+            wrapper.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                wrapper.classList.add('dragover');
+            });
+
+            wrapper.addEventListener('dragleave', () => {
+                wrapper.classList.remove('dragover');
+            });
+
+            wrapper.addEventListener('drop', (e) => {
+                e.preventDefault();
+                wrapper.classList.remove('dragover');
+
+                const files = e.dataTransfer.files;
+                input.files = files;
+                displayFiles(files, fileList, icon, text);
+            });
+
+            input.addEventListener('change', () => {
+                displayFiles(input.files, fileList, icon, text);
+            });
+        });
+
+        function displayFiles(files, container, icon, text) {
+            if (files.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            container.innerHTML = '';
+
+            // Update icon and text
+            icon.textContent = files.length === 1 ? '📄' : '📚';
+            text.textContent = `${files.length} file${files.length > 1 ? 's' : ''} selected`;
+
+            Array.from(files).forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+
+                const fileName = document.createElement('span');
+                fileName.className = 'file-name';
+                fileName.textContent = file.name;
+
+                const fileSize = document.createElement('span');
+                fileSize.className = 'file-size';
+                fileSize.textContent = formatFileSize(file.size);
+
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-file';
+                removeBtn.textContent = '✕';
+                removeBtn.type = 'button';
+                removeBtn.onclick = () => removeFile(index, container.closest('.file-input-wrapper'));
+
+                fileItem.appendChild(fileName);
+                fileItem.appendChild(fileSize);
+                fileItem.appendChild(removeBtn);
+                container.appendChild(fileItem);
+            });
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function removeFile(index, wrapper) {
+            const input = wrapper.querySelector('.file-input');
+            const dt = new DataTransfer();
+            const files = Array.from(input.files);
+
+            files.forEach((file, i) => {
+                if (i !== index) dt.items.add(file);
+            });
+
+            input.files = dt.files;
+
+            const fileList = wrapper.querySelector('.file-list');
+            const icon = wrapper.querySelector('.file-icon');
+            const text = wrapper.querySelector('.file-text');
+            displayFiles(input.files, fileList, icon, text);
+        }
+
+        // Form submission handling
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const progressBar = document.getElementById('progressBar');
+            const progressFill = document.getElementById('progressFill');
+
+            submitBtn.disabled = true;
+            submitText.textContent = 'Processing...';
+            loadingSpinner.style.display = 'inline-block';
+            progressBar.style.display = 'block';
+
+            // Simulate progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 90) progress = 90;
+                progressFill.style.width = progress + '%';
+            }, 500);
+
+            // Clean up on form completion (this would be handled by the server response)
+            setTimeout(() => {
+                clearInterval(interval);
+                progressFill.style.width = '100%';
+            }, 3000);
+        });
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        // Validate files before submission
+        function validateFiles() {
+            const questionPaper = document.querySelector('input[name="question_paper"]').files;
+            const studentPdfs = document.querySelector('input[name="student_pdfs"]').files;
+
+            if (questionPaper.length === 0) {
+                showToast('Please upload a question paper', 'error');
+                return false;
+            }
+
+            if (studentPdfs.length === 0) {
+                showToast('Please upload at least one student answer sheet', 'error');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Enhanced form validation
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            if (!validateFiles()) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // PDF Preview functionality
+        function previewPDF(filename) {
+            const previewUrl = `/preview/${filename}`;
+            const previewWindow = window.open(
+                previewUrl,
+                'pdfPreview',
+                'width=1000,height=800,scrollbars=yes,resizable=yes,menubar=no,toolbar=no,location=no,status=no'
+            );
+
+            if (previewWindow) {
+                previewWindow.focus();
+            } else {
+                showToast('Please allow popups to preview PDFs', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

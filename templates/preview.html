@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Comparison - {{ filename }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title h1 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .filename {
+            color: #718096;
+            font-size: 0.85rem;
+            font-weight: 500;
+            max-width: 250px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        .close-btn {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            color: white;
+        }
+
+        .close-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(229, 62, 62, 0.3);
+        }
+
+        .compare-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            height: calc(100vh - 80px);
+        }
+
+        .pane {
+            flex: 1;
+            overflow-y: scroll;
+            background: #fff;
+            border-right: 1px solid #edf2f7;
+        }
+
+        .pane:last-child {
+            border-right: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>📑 Answer Sheet Viewer</h1>
+                <div class="filename">{{ filename }}</div>
+            </div>
+            <div class="header-actions">
+                <a href="{{ url_for('preview_pdf', filename=filename) }}" class="action-btn download-btn" target="_blank">
+                    📥 Download
+                </a>
+                <button class="action-btn close-btn" onclick="window.close()">
+                    ✕ Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="compare-container">
+        <div class="pane" id="leftPane">
+            <iframe src="{{ url_for('preview_pdf', filename=original_filename) }}"></iframe>
+        </div>
+        <div class="pane" id="rightPane">
+            <iframe src="{{ url_for('preview_pdf', filename=filename) }}"></iframe>
+        </div>
+    </div>
+
+    <script>
+        const leftPane = document.getElementById('leftPane');
+        const rightPane = document.getElementById('rightPane');
+
+        let syncingLeft = false;
+        let syncingRight = false;
+
+        leftPane.addEventListener('scroll', () => {
+            if (!syncingLeft) {
+                syncingRight = true;
+                rightPane.scrollTop = leftPane.scrollTop;
+            }
+            syncingLeft = false;
+        });
+
+        rightPane.addEventListener('scroll', () => {
+            if (!syncingRight) {
+                syncingLeft = true;
+                leftPane.scrollTop = rightPane.scrollTop;
+            }
+            syncingRight = false;
+        });
+    </script>
+</body>
+</html>

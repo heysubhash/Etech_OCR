@@ -1,0 +1,302 @@
+```latex
+\documentclass[a4paper,12pt]{article}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{enumitem}
+
+\title{Answer Sheet Matching}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Matched Answers}
+
+\begin{enumerate}[label=\textbf{Q\arabic*.}]
+    \item \textbf{Short answer/objective question.}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textbf{Answer:} \\
+        \textit{Incidence Matrix to Adjacency Matrix}
+
+        The incidence matrix provided is:
+        \[
+        \begin{bmatrix}
+        1 & 0 & 0 \\
+        1 & 1 & 1 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1 \\
+        \end{bmatrix}
+        \]
+
+        The matrix structure has been given the name. Each edge in an incidence matrix corresponds to a row and every node has its designated column. Each entry of value '1' shows that the node has an incidence with the edge. A simple undirected graph contains exactly two adjacent nodes for every single edge within it.
+
+        From the incidence matrix:
+        \begin{itemize}
+            \item Edge 1 connects Node 1 and Node 2
+            \item Edge 2 connects Node 2 and Node 3
+            \item Edge 3 connects Node 2 and Node 4
+        \end{itemize}
+
+        The connection relationship between nodes in a graph structure appears in adjacency matrix format. The adjacency matrix contains value 1 in position (i,j) and (j,i) when node i and node j having an edge, otherwise both positions contain 0.
+
+        The adjacency matrix will represent node to node connection.
+        \[
+        \begin{bmatrix}
+        0 & 1 & 0 & 0 \\
+        1 & 0 & 1 & 1 \\
+        0 & 1 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        \end{bmatrix}
+        \]
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(B) Erdős–Rényi (Random Network) Model.}
+
+        In the Erdős–Rényi model, the edges connect randomly because every edge formation remains isolated from other edges.
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(C) Nash Equilibrium}
+
+        Players reach a stable position known as Nash Equilibrium when none of them achieve higher rewards through independent strategy modifications.
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(B) Assortative Mixing}
+
+        Under the concept of assortative mixing, similar nodes establish connections with each other.
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(D) Because it quantifies how often a node lies on the shortest paths between other nodes.}
+
+        The measurement technique called Betweenness Centrality evaluates nodes based on their capacity to link other nodes because it determines information flow efficiencies.
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(C) The presence of many nodes with very high degrees (hubs) that maintain connectivity.}
+
+        Scale-free networks (hubs) operate through central nodes which serve as crucial connections, so their attack vulnerability becomes particularly pronounced.
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(A) The number of intra-community edges is significantly higher than expected in a random network with the same degree sequence.}
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(B) \(\frac{2}{5}\)}
+
+        Jaccard Coefficient,
+
+        Neighbors of X: A, B, C, D
+
+        Neighbors of Y: C, D, B
+
+        Intersection: C, D (2 nodes)
+
+        Union: A, B, C, D, E (5 nodes)
+
+        Jaccard Coefficient = \(\frac{\text{Intersection}}{\text{Union}} = \frac{2}{5} = 0.4\)
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(B) LTM uses edge probabilities independently.}
+
+        LTM uses a weighted sum of active neighbors compared to a node threshold.
+
+        CM operates through independent edge probability, but LTM adopts a threshold-based method which takes the weighted sum of neighbors' impact.
+        
+        \item \textbf{Answer:} \\
+        \textit{Option-(B) Because aggregating features from dissimilar neighbors can blur the node's own representative features, making classification harder.}
+
+        When heterophily occurs during GCN and heterophily operations, it becomes difficult to classify nodes because they lose their individual characteristics through the features aggregation process from dissimilar neighbors.
+    \end{enumerate}
+    
+    \item \textbf{Network analysis concepts for vaccination strategy.} \\
+    \textit{Influenza Spread and Vaccination}
+
+    For reducing influenza transmission to 5\% level, a combined approach of centrality measurement should be used to determine who gets vaccinated first.
+
+    A high value of betweenness centrality reveals that the node functions as a "bridge" through which the disease transmits to numerous other connections. The immunization of these specific people breaks transmission pathways between different segments of the network.
+
+    High degree centrality helps identify "hubs" which possess numerous connections since they have the potential to infect multiple other people.
+
+    A computation between betweenness and degree centrality should be performed for every individual:
+    \begin{itemize}
+        \item A list of ranked people forms based on the centrality measurement result.
+        \item The group of people selected for vaccination needs a strong ranking in both centrality measures.
+        \item Additional individuals should be included for vaccination until 5\% coverage is reached if the top selected candidates do not suffice.
+    \end{itemize}
+
+    Justification:
+
+    A combined approach delivers better results since betweenness centrality identifies network bridges which link different network sections while degree centrality distinguishes hubs that spread widely.
+
+    Vaccinating key hubs and bridges provides maximum efficiency by controlling both small outbreaks and widespread distribution of the virus.
+    
+    \item \textbf{Improving 'suggested collaborators' feature.} \\
+    \textit{Suggested Collaborators Feature}
+
+    Link Prediction: System utilizes linking prediction algorithms that generate potential collaboration prediction through the analysis of current co-authorship and citation data.
+
+    When researchers A and B demonstrate numerous joint authorship links with each other, a link prediction method could indicate potential collaboration between them.
+
+    Through Node2Vec, the system creates vector representations of researchers based on network structural information, embedding that aligns with each other between researchers demonstrates similar research interest and collaboration potential.
+
+    Homophily:
+
+    Due to the natural human tendency of homophily, the system will provide recommendations related to researchers within similar academic fields.
+
+    Due to encouraging diverse collaboration, the system requires a diversity metric within its recommendation functionality. Although the link prediction score may be slightly lower, the system will give priority to research links that combine fields from distinct areas.
+    
+    \item \textbf{Girvan-Newman algorithm.}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textbf{Answer:} \\
+        \textit{Girvan-Newman Core Idea}
+
+        The Girvan-Newman algorithm detects communities through a recursive method which successively eliminates edges connecting different communities.
+        
+        \item \textbf{Answer:} \\
+        \textit{Edge Betweenness Centrality}
+
+        Edge Betweenness Centrality analyzes the number of times an edge lies between all pairs of nodes to discover these edges.
+
+        Edges with high betweenness values link separate communities according to this method.
+        
+        \item \textbf{Answer:} \\
+        \textit{Computational Limitation}
+
+        The cost of computation increases substantially when calculating edge betweenness centrality on extensive networks, especially when they involve frequent edge removal operations.
+        
+        \item \textbf{Answer:} \\
+        \textit{Louvain Method}
+
+        The Louvain method functions as a scalable approach which uses greedy optimization to shift nodes between communities during its iterative process.
+    \end{enumerate}
+    
+    \item \textbf{PageRank algorithm.}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textbf{Answer:} \\
+        \textit{PageRank Algorithm}
+
+        According to PageRank, the importance of nodes depends on both the quantity and quality of incoming links passing through them.
+
+        Page importance derives from other pages that link to it.
+        
+        \item \textbf{Answer:} \\
+        \textit{Damping Factor (d)}
+
+        During random web navigation, a surfer has a probability expressed through the damping factor (d) either to pause their link clicks or to move to an arbitrary page.
+        
+        \item \textbf{Answer:} \\
+        \textit{Dangling Nodes}
+
+        The lack of outgoing links from dangling nodes makes PageRank flow through the network. We handle this condition using an equal distribution among all network nodes.
+
+        Each iteration distributes the rank of dangling nodes across all network nodes in an equal way.
+    \end{enumerate}
+    
+    \item \textbf{Game theory on network edge.}
+    \begin{enumerate}[label=(\alph*)]
+        \item \textbf{Answer:} \\
+        \textit{A strategy pair where players can improve their payoff by unilaterally changing their strategy.}
+
+        Check each pair:
+
+        \((U, A)\): Payoff (3,2)
+        \begin{itemize}
+            \item Player 1: Switch to L \(\rightarrow\) 2 < 3, no improve
+            \item Player 2: Switch to B \(\rightarrow\) 1 < 2, no improve
+            \item Nash Equilibrium.
+        \end{itemize}
+
+        \((U, B)\): Payoff (0,1)
+        \begin{itemize}
+            \item Player 1: Switch L \(\rightarrow\) 2 > 0, improve
+            \item Not Nash
+        \end{itemize}
+
+        \((L, B)\): Payoff (2,3)
+        \begin{itemize}
+            \item Player 1: Switch to U \(\rightarrow\) 0 < 2, No improve
+            \item Player 2: Switch to A \(\rightarrow\) 0 < 3, no improvement
+            \item Nash Equilibrium.
+        \end{itemize}
+
+        Therefore, there are two pure strategy Nash equilibriums: \((U, A)\) and \((L, B)\).
+        
+        \item \textbf{Answer:} \\
+        \textit{Player 1 plays U with probability p, L with probability 1-p.}
+
+        Player 2's strategy:
+
+        Expected payoff for Player 2 if choosing Strategy A:
+        \[
+        \mathbb{E}[A] = p \times 2 + (1-p) \times 0 = 2p
+        \]
+
+        Expected payoff for Player 2 if choosing Strategy B:
+        \[
+        \mathbb{E}[B] = p \times 1 + (1-p) \times 3 = p + 3(1-p) = p + 3 - 3p = 3 - 2p
+        \]
+        
+        \item \textbf{Answer:} \\
+        \textit{For Player 2:}
+
+        \[
+        \mathbb{E}[A] = 2p = 2 \times 0.7 = 1.4
+        \]
+        \[
+        \mathbb{E}[B] = 3 - 2p = 3 - 2 \times 0.7 = 1.6
+        \]
+
+        Since \(\mathbb{E}[B] > \mathbb{E}[A]\), Player 2 could choose Strategy B.
+
+        For Player 1: \((0.7 U, 0.3 L)\)
+
+        Expected payoff = \(0.7 \times 0 + 0.3 \times 2 = 0.6\) when Player 2 chooses B.
+
+        The expected outcome for Player 1 receives a payoff of 0.6 if Player 2 receives a payoff of 1.6.
+    \end{enumerate}
+    
+    \item \textbf{Graph Neural Network feature update.} \\
+    \textit{Graph Neural Network Feature Update}
+
+    \begin{center}
+    \includegraphics[width=0.5\textwidth]{graph_diagram.png}
+    \end{center}
+
+    Given,
+
+    Directed edge \(A \rightarrow B\), \(C \rightarrow B\), \(D \rightarrow B\)
+
+    Weighted matrix \(W = \begin{bmatrix} 0.5 & 0 \\ 0.1 & 0.2 \end{bmatrix}\)
+
+    Step 1: Aggregate neighbor features.
+    \[
+    h_A^{(0)} + h_C^{(0)} + h_D^{(0)} = \begin{bmatrix} 1 \\ \end{bmatrix} + \begin{bmatrix} 3 \\ \end{bmatrix} + \begin{bmatrix} 3 \\ \end{bmatrix}
+    \]
+    \[
+    h_{N(B)}^{(0)} = \frac{1}{3} \begin{bmatrix} 7 \\ 6 \end{bmatrix} = \begin{bmatrix} \frac{7}{3} \\ 2 \end{bmatrix}
+    \]
+
+    Step 2: Transform
+    \[
+    W \begin{bmatrix} \frac{7}{3} \\ 2 \end{bmatrix} = \begin{bmatrix} 0.5 & 0 \\ 0.1 & 0.2 \end{bmatrix} \begin{bmatrix} \frac{7}{3} \\ 2 \end{bmatrix}
+    \]
+    \[
+    = \begin{bmatrix} 0.5 \times \frac{7}{3} + 0 \times 2 \\ 0.1 \times \frac{7}{3} + 0.2 \times 2 \end{bmatrix}
+    \]
+    \[
+    = \begin{bmatrix} \frac{7}{6} \\ 0.1 \times \frac{7}{3} + 0.4 \end{bmatrix}
+    \]
+    \[
+    = \begin{bmatrix} \frac{7}{6} \\ \frac{7}{30} + 0.4 \end{bmatrix}
+    \]
+
+    Step 3: Activate
+    \[
+    \text{ReLU} \begin{bmatrix} \frac{7}{6}, \frac{7}{30} + 0.4 \end{bmatrix} = \begin{bmatrix} \frac{7}{6}, \frac{7}{30} + 0.4 \end{bmatrix}
+    \]
+
+    Final Answer \(h_B^{(1)} = \begin{bmatrix} \frac{7}{6}, \frac{7}{30} + 0.4 \end{bmatrix}\).
+    
+\end{enumerate}
+
+\end{document}
+```
