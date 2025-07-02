@@ -1,5 +1,4 @@
-# ocr_openai
-
+#ocr_openai
 import os
 from dotenv import load_dotenv
 from PIL import Image
@@ -36,7 +35,8 @@ def gpt4o_extract_answer_latex(image_paths, question_text):
                         "Write everything exactly as written in the answer sheet.\n"
                         "Do NOT correct math steps or reasoning. Preserve diagrams with descriptions if present.\n"
                         "Generate a full LaTeX document (start with \\documentclass and end with \\end{document}).\n"
-                        "Include required packages.\n"
+                        # MODIFIED LINE BELOW: Be more explicit about essential packages
+                        "Include standard packages like amsmath, amssymb, graphicx, and geometry.\n"
                         f"\nQUESTION PAPER:\n{question_text}\n"
                         "ANSWER SHEET IMAGES:"
                     )
@@ -62,10 +62,18 @@ def gpt4o_extract_answer_latex(image_paths, question_text):
 
     return response.choices[0].message.content
 
-# Example usage:
+# Example usage: (This part remains as is, for local testing)
 if __name__ == "__main__":
     load_dotenv()
     openai.api_key = os.getenv("OPENAI_API_KEY")
+
+    if not os.path.exists("uploads/question_data/question_paper.txt"):
+        print("Please create 'uploads/question_data/question_paper.txt' for example usage.")
+        exit()
+    if not os.path.exists("uploads/students_data/G24AI1006_Abhinav Kumar Ranjan_Social Network Analysis.pdf"):
+        print("Please place a student PDF in 'uploads/students_data/' for example usage.")
+        exit()
+
 
     question_text = open("uploads/question_data/question_paper.txt", "r", encoding="utf-8").read()
     student_pdf = "uploads/students_data/G24AI1006_Abhinav Kumar Ranjan_Social Network Analysis.pdf"
